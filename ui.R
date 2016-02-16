@@ -2,7 +2,9 @@ library(shinydashboard)
 library(tools)
 source("utils.R")
 
-sourceDir("modules", "ui.R", 2)
+sourceDir(path = "modules",
+          searchedFileName = "ui.R", 
+          maxDepth = 2)
 
 dashboardPage(
   dashboardHeader(title = "ModularSD"),

@@ -1,1 +1,1 @@
-HelloWorldhistdata <- rnorm(500)
+HelloWorldHistdata <- rnorm(500)

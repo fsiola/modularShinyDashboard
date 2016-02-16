@@ -6,8 +6,7 @@ sourceDir(path = "modules",
 server <- function(input, output, session) {
   sourceDir(path = "modules", 
             searchedFileName = "server.R", 
-            maxDepth = 3, 
-            onlyLastDepth = FALSE,
+            maxDepth = 3,
             ignoreFolders = c("tests"),
             local = TRUE)
 }

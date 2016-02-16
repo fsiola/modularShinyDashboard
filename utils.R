@@ -1,9 +1,8 @@
-tabItems <- function(...) {
-  div(class ="tab-content", ...)
-}
-
+#' evaluates enviroment variables based on a given pattern name
+#'
+#' @param pattern pattern to search in the enviroment
+#' @param envir current enviroment
 evalNames <- function(pattern, envir = globalenv()) {
-  
   sapply(ls(pattern = pattern,
             envir = envir),
          FUN = function(variableName) {
@@ -12,27 +11,22 @@ evalNames <- function(pattern, envir = globalenv()) {
          simplify = FALSE)
 }
 
-sourceFile <- function(path, fileName, searchedFileName, maxDepth, depth, onlyLastDepth, local = FALSE) {
-  shouldSource <- if (onlyLastDepth && depth + 1 == maxDepth) 
-    TRUE
-  else if (onlyLastDepth && depth + 1 != maxDepth)
-    FALSE
-  else
-    TRUE
-  
-  fullPath <- file.path(path, fileName)
-  
-  if (file_ext(fullPath) == 'R') {
-    if (is.null(searchedFileName) && shouldSource) {
-      source(fullPath, local = local)
-    } else if(fileName == searchedFileName && shouldSource) {
-      source(fullPath, local = local)
-    }
-  }
+#' this function overrides tabItems from shinyDashboard so 
+#' it can work correctly with evalNames function
+tabItems <- function(...) {
+  div(class ="tab-content", ...)
 }
 
-sourceDir <- function(path, searchedFileName = NULL, maxDepth = 1, depth = 0, onlyLastDepth = FALSE, ignoreFolders = c(""), local = FALSE) {
-  
+
+#' recursive load file in directory
+#'
+#' @param path folder being evaluated
+#' @param searchedFileName desired filename
+#' @param maxDepth max depth of folders
+#' @param depth current depth
+#' @param ignoreFolders vector containing folders to ignore (eg. "tests")
+#' @param local same parameter from source function (TRUE, FALSE or an environment, determining where the parsed expressions are evaluated. FALSE (the default) corresponds to the user's workspace (the global environment) and TRUE to the environment from which source is called.)
+sourceDir <- function(path, searchedFileName = NULL, maxDepth = 1, depth = 0, ignoreFolders = c(""), local = FALSE) {
   if (depth != maxDepth) {
     for (fileName in list.files(path)) {
       fullPath <- file.path(path, fileName)
@@ -43,10 +37,14 @@ sourceDir <- function(path, searchedFileName = NULL, maxDepth = 1, depth = 0, on
             local = parent.frame() # saving caller enviroment
           }
             
-          sourceDir(fullPath, searchedFileName, maxDepth, depth + 1, onlyLastDepth, ignoreFolders, local)
+          sourceDir(fullPath, searchedFileName, maxDepth, depth + 1, ignoreFolders, local) #recursive call
         }
       } else {
-        sourceFile(path, fileName, searchedFileName, maxDepth, depth, onlyLastDepth, local)
+        if (is.null(searchedFileName) && file_ext(fullPath) == 'R') {
+          source(fullPath, local = local)
+        } else if(fileName == searchedFileName) {
+          source(fullPath, local = local)
+        }
       }
     }
   }

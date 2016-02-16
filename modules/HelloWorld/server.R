@@ -1,4 +1,4 @@
 output$HelloWorldPlot <- renderPlot({
-  data <- HelloWorldhistdata[seq_len(input$HelloWorldSlider)]
+  data <- HelloWorldHistdata[seq_len(input$HelloWorldSlider)]
   hist(data)
 })
