@@ -8,6 +8,8 @@ Create a folder inside "modules" folder containg the following files:
  - OnLoad.R: this file holds all run-once code of your module.
 
 For reference, please check the HelloWorld module.
+
+It is a good practice to name all variables inside a module with the same prefix to avoid naming problems between modules.
  
 ## ui.R
 You should create your UI just like any other Shiny page. There are two things you should do here:
